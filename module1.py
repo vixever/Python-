@@ -1,54 +1,69 @@
-# -*- coding: utf-8 -*-
-from PIL import Image
-import argparse   #argparse模块的作用是用于解析命令行参数
+#_*_ coding:utf-8 _*_
 
-ascii_char = list("$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\|()1{}[]?-_+~<>i!lI;:,\"^`'. ")
 
-def get_char(r,g,b,alpha = 256):
-    if alpha == 0:
-        return ' '
-    length=len(ascii_char)
-    gray = int(0.2126*r + 0.7152*g + 0.0722*b)
+class updatenew(object):
+    def __init__(self, matrix):
+        super(updatenew,self).__init__()
+        self.matrix = matrix
+        self.score = 0
+        self.zerolist = []
 
-    unit = (256.0+1)/length
-    return ascii_char[int(gray/unit)]    #灰度值小的用前面的符号，大的用后面的符号
+    def removezero(self,rowlist):
+        while True:
+            mid = rowlist[:]
+            try:
+                rowlist.remove(0)
+                rowlist.append(0)
+            except:
+                pass
+            if rowlist == mid:
+                break
+        return self.combinelist(rowlist)
 
-#命令行参数处理
-parser = argparse.ArgumentParser()
+    def combinelist(self,rowlist):
+        start_num = 0
+        end_num = size-rowlist.count(0)-1
+        while start_num<end_num:
+            if rowlist[start_num] == rowlist[start_num+1]:
+                rowlist[start_num] *= 2
+                self.score += int(rowlist[start_num])
+                rowlist[start_num+1:] = rowlist[start_num+2:]
+                rowlist.append(0)
+            start_num +=1
+        return rowlist
 
-parser.add_argument('ascii_dora.png') #输入文件
-parser.add_argument('-o','--output') #输出文件
-parser.add_argument('--width', type = int, default = 80) #输出字符画宽
-parser.add_argument('--height', type = int, default = 80) # 输出字符画高
+    def tosequence(self,matrix):
+        lastmatrix = matrix.copy()
+        m,n = matrix.shape
+        for i in rang(m):
+            newlist = self.removezero(list(matrix[i]))
+            matrix[i] = newlist
+            for k in range(size-1,size-newlist,count(0)-1,-1):
+                self.zerolist.append((i,k))
+        if matrix.min() == 0 and (matrix!=lastmatrix).any():
+            gameinit.inidata(size,matrix,self,zerolist)
+        return matrix
 
-#获取参数
-args = parser.parse_args()
+class leftaction(updatenew):
+    def __init__(self,matrix):
+        super(leftaction,self).__init__(matrix)
 
-IMG = args.file
-WIDTH = args.width
-HEIGHT = args.height
-OUTPUT = args.output
-
-if __name__ =='__main__':
-    im = Image.open(IMG)
-    im = im.resize((WIDTH,HEIGHT), Image.NEAREST)
-
-    txt = ""
-
-    for i in range(HEIGHT):
-        for j in range(WIDTH):
-            txt += get_char(*im.getpixel((j,i)))
-        txt += '\n'
-
-    print txt
-
-    if OUTPUT:
-        with open(OUTPUT,'w') as f:
-            f.write(txt)
-
-    else:
-        with open("output.txt",'w') as f:
-            f.write(txt)
+    def handledata(self):
+        matrix = self.matrix.copy()
+        newmatrix = self.tosequence(matrix)
+        return newmatrix,self.score
+    def handledata(self):
+        matrix= self.matrix.copy()[:,::-1]
+        newmatrix = self.tosequence(matrix)
+        return newmatrix[:,::-1],self.score
+    def handledata(self):
+        matrix = self.matrix.copy().t
+        newmatrix = self.tosequence(matrix)
+        return newmatrix.t,self.score
+    def handledata(self):
+        matrix = self.matrix.copy()[::-1].t
+        newmatrix = self.tosequence(matrix)
+        return newmatrix.t[::-1],self.score
 
 
 

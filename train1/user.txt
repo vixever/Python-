@@ -1,0 +1,3 @@
+ root   12345   elradfmwM   E:\\
+ train   12345   elradfmwM   E:\python\Pycharm\train1
+ test    12345   elradfmwM   E:\python\Pycharm\train1\train
